@@ -15,6 +15,6 @@ export class NavComponent implements OnInit {
     $event.preventDefault();
 
     this.modal.toggleModal('auth');
-    console.log('In openModal Nav Component Event value is', $event);
+    //console.log('In openModal Nav Component Event value is', $event);
   }
 }
