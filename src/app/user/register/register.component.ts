@@ -15,4 +15,8 @@ export class RegisterComponent {
     confirm_password: new FormControl(''),
     phoneNumber: new FormControl(''),
   });
+
+  constructor() {
+    this.registerForm.controls.name
+  }
 }
