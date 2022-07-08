@@ -10,8 +10,10 @@
       placeholder="Enter Name"
       minlength="3"
     />
-    <p *ngIf="registerForm.controls.name.errors?.required">
-      {{ <registerForm.controls.name?.errors  | json }}
+    <!-- <p>{{ registerForm.get("name")?.errors | json }}</p>-->
+
+    <p *ngIf="registerForm.controls.name.errors?.required" class="text-red-400">
+      Field is required
     </p>
   </div>
   <!-- Email -->
