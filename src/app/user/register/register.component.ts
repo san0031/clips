@@ -20,7 +20,11 @@ export class RegisterComponent {
     Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$'), //got the pattern from https://danielk.tech/home/angular-material-form-validation
   ]);
   confirm_password = new FormControl('', [Validators.required]);
-  phoneNumber = new FormControl('');
+  phoneNumber = new FormControl('', [
+    Validators.required,
+    Validators.minLength(13),
+    Validators.maxLength(13),
+  ]);
 
   registerForm = new FormGroup({
     name: this.name,
