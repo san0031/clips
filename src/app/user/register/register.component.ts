@@ -14,8 +14,12 @@ export class RegisterComponent {
     Validators.min(18),
     Validators.max(120),
   ]);
-  password = new FormControl('');
-  confirm_password = new FormControl('');
+  password = new FormControl('', [
+    Validators.required,
+    //Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm), // did not work  https://regexr.com/3bfsi
+    Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}$'), //got the pattern from https://danielk.tech/home/angular-material-form-validation
+  ]);
+  confirm_password = new FormControl('', [Validators.required]);
   phoneNumber = new FormControl('');
 
   registerForm = new FormGroup({
