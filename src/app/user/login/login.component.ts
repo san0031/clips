@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  register() {
+  login() {
     this.showAlert = true;
     this.alertMsg = 'Please wait! Login in Progress.';
     this.alertColor = 'blue';
