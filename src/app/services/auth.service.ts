@@ -13,14 +13,11 @@ import IUser from 'src/app/models/user.model';
 })
 export class AuthService {
   private usersCollection: AngularFirestoreCollection<IUser>;
-  private IsAuthenticated$: Observable<boolean>
+  public IsAuthenticated$: Observable<boolean>;
 
   constructor(private auth: AngularFireAuth, private db: AngularFirestore) {
     this.usersCollection = db.collection('users');
-    this.IsAuthenticated$ = auth.user.pipe(
-      map(user => !!user)
-
-    )
+    this.IsAuthenticated$ = auth.user.pipe(map((user) => !!user));
   }
 
   public async createUser(userData: IUser) {
