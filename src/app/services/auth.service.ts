@@ -24,12 +24,19 @@ export class AuthService {
       userData.password
     );
     // console.log(userCred);
-    await this.usersCollection.add({
+    if (!userCred.user) {
+      throw new Error("User can't be found");
+    }
+    await this.usersCollection.doc(userCred.user?.uid).set({
       name: userData.name,
       email: userData.email,
       age: userData.age,
       //password: this.password.value,
       phoneNumber: userData.phoneNumber,
+    });
+
+    await userCred.user.updateProfile({
+      displayName: userData.name,
     });
   }
 }
