@@ -8,12 +8,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./nav.component.css'],
 })
 export class NavComponent implements OnInit {
-  isAuthenticated = false;
-  constructor(public modal: ModalService, public auth: AuthService) {
-    this.auth.IsAuthenticated$.subscribe((status) => {
-      this.isAuthenticated = status;
-    });
-  }
+  constructor(public modal: ModalService, public auth: AuthService) {}
 
   ngOnInit(): void {}
 
