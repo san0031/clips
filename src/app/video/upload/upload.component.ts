@@ -12,6 +12,7 @@ export class UploadComponent implements OnInit {
   isDragover = false;
   file: File | null = null;
   nextStep = false;
+  inSubmission = false;
 
   constructor(private storage: AngularFireStorage) {}
 
@@ -21,6 +22,10 @@ export class UploadComponent implements OnInit {
     nonNullable: true,
   });
   ngOnInit(): void {}
+
+  showAlert = false;
+  alertMsg = 'Please wait! Your file is being uploaded.';
+  alertColor = 'blue';
 
   uploadForm = new FormGroup({
     title: this.title,
@@ -39,10 +44,24 @@ export class UploadComponent implements OnInit {
     this.nextStep = true;
   }
 
-  uploadFile() {
+  async uploadFile() {
     //console.log('File uploaded');
+    this.showAlert = true;
+    this.alertMsg = 'Please wait! Your file is being uploaded.';
+    this.alertColor = 'blue';
+    this.inSubmission = true;
     const clipFileName = uuid();
     const clipPath = `clips/${clipFileName}.mp4`;
-    this.storage.upload(clipPath,this.file)
+    try {
+      await this.storage.upload(clipPath, this.file);
+    } catch (e) {
+      console.error(e);
+      this.alertMsg = 'An unexpected error occured. Please try again later';
+      this.alertColor = 'red';
+      this.inSubmission = false;
+      return;
+    }
+    this.alertMsg = 'Success! Your file has been uploaded.';
+    this.alertColor = 'green';
   }
 }
