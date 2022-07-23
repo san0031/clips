@@ -24,8 +24,9 @@
     <!-- Video Editor -->
     <ng-template #uploadFormCtr>
       <app-alert *ngIf="showAlert" [color]="alertColor">
-        {{ alertMsg }}</app-alert
-      >
+        <p>{{ alertMsg }}</p>
+        <p *ngIf="showPercentage">{{ percentage | percent }}</p>
+      </app-alert>
       <!-- Form -->
       <form [formGroup]="uploadForm" (ngSubmit)="uploadFile()">
         <!-- Screenshots -->

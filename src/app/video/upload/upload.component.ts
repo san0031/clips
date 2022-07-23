@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { v4 as uuid } from 'uuid';
+import { last } from 'rxjs/operators';
 
 @Component({
   selector: 'app-upload',
@@ -13,6 +14,8 @@ export class UploadComponent implements OnInit {
   file: File | null = null;
   nextStep = false;
   inSubmission = false;
+  percentage = 0;
+  showPercentage = false;
 
   constructor(private storage: AngularFireStorage) {}
 
@@ -44,24 +47,47 @@ export class UploadComponent implements OnInit {
     this.nextStep = true;
   }
 
-  async uploadFile() {
+  uploadFile() {
     //console.log('File uploaded');
     this.showAlert = true;
     this.alertMsg = 'Please wait! Your file is being uploaded.';
     this.alertColor = 'blue';
     this.inSubmission = true;
+    this.showPercentage = true;
     const clipFileName = uuid();
     const clipPath = `clips/${clipFileName}.mp4`;
-    try {
-      await this.storage.upload(clipPath, this.file);
-    } catch (e) {
-      console.error(e);
-      this.alertMsg = 'An unexpected error occured. Please try again later';
-      this.alertColor = 'red';
-      this.inSubmission = false;
-      return;
-    }
-    this.alertMsg = 'Success! Your file has been uploaded.';
-    this.alertColor = 'green';
+    //  try {
+    const task = this.storage.upload(clipPath, this.file);
+    task.percentageChanges().subscribe((progress) => {
+      this.percentage = (progress as number) / 100;
+    });
+
+    task
+      .snapshotChanges()
+      .pipe(last())
+      .subscribe({
+        next: (snapshot) => {
+          this.alertMsg =
+            'Success!Your clip is now ready to share with the world.';
+          this.alertColor = 'green';
+          this.showPercentage = false;
+        },
+        error: (error) => {
+          console.error(error);
+          this.alertMsg = 'Upload failed. Please try again later';
+          this.alertColor = 'red';
+          this.inSubmission = true;
+          this.showPercentage = false;
+        },
+      });
+    // } catch (e) {
+    //   console.error(e);
+    //   this.alertMsg = 'An unexpected error occured. Please try again later';
+    //   this.alertColor = 'red';
+    //   this.inSubmission = false;
+    //   return;
+    // }
+    // this.alertMsg = 'Success! Your file has been uploaded.';
+    // this.alertColor = 'green';
   }
 }
