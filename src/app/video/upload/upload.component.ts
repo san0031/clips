@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { last, switchMap } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
-
+import { ClipService } from 'src/app/services/clip.service';
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
@@ -22,7 +22,8 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private storage: AngularFireStorage,
-    private auth: AngularFireAuth
+    private auth: AngularFireAuth,
+    private clipsService: ClipService
   ) {
     auth.user.subscribe((user) => (this.user = user));
   }
@@ -57,6 +58,7 @@ export class UploadComponent implements OnInit {
 
   uploadFile() {
     //console.log('File uploaded');
+    this.uploadForm.disable();
     this.showAlert = true;
     this.alertMsg = 'Please wait! Your file is being uploaded.';
     this.alertColor = 'blue';
@@ -80,12 +82,14 @@ export class UploadComponent implements OnInit {
       .subscribe({
         next: (url) => {
           const clip = {
-            uid: this.user?.uid,
-            displayName: this.user?.displayName,
+            uid: this.user?.uid as string,
+            displayName: this.user?.displayName as string,
             title: this.title.value,
             fileName: `${clipFileName}.mp4`,
             url,
           };
+
+          this.clipsService.createClip(clip);
           console.log(clip);
           this.alertMsg =
             'Success!Your clip is now ready to share with the world.';
@@ -93,6 +97,7 @@ export class UploadComponent implements OnInit {
           this.showPercentage = false;
         },
         error: (error) => {
+          this.uploadForm.enable();
           console.error(error);
           this.alertMsg = 'Upload failed. Please try again later';
           this.alertColor = 'red';
