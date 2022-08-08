@@ -10,6 +10,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
 import { ClipService } from 'src/app/services/clip.service';
 import { Router } from '@angular/router';
+import IClip from 'src/app/models/clip.model';
 
 @Component({
   selector: 'app-upload',
@@ -99,6 +100,7 @@ export class UploadComponent implements OnDestroy {
             title: this.title.value,
             fileName: `${clipFileName}.mp4`,
             url,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           };
 
           const clipDocRef = await this.clipsService.createClip(clip);
